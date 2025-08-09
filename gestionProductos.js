@@ -13,3 +13,21 @@ let productos = [
     {id: 4, nombre: 'Yerba', precio: 2500, stock:30},
     {id: 5, nombre: 'Azucar', precio: 1400, stock:40},
 ];
+
+/**
+ * exporto el array
+ */
+
+/**
+ * 2. Operaciones basicas y acceso
+ * imprimo la longitud del array
+ */
+
+let logitudArray = productos
+console.log(`Total de productos: ${logitudArray.length}`);
+
+let segundoProducto = productos[1].nombre;
+console.log(`Segundo producto: ${segundoProducto}`);
+
+let cuartoProducto = productos[3].nombre;
+console.log(`Cuarto producto: ${cuartoProducto}`)
