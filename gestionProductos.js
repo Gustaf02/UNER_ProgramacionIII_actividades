@@ -7,27 +7,51 @@ nombre, precio y stock.
 */
 
 let productos = [
-    {id: 1, nombre: 'Pan', precio: 6000, stock:15},
-    {id: 2, nombre: 'Queso', precio: 9600, stock:10},
-    {id: 3, nombre: 'Jamon', precio: 11000, stock:8},
-    {id: 4, nombre: 'Yerba', precio: 2500, stock:30},
-    {id: 5, nombre: 'Azucar', precio: 1400, stock:40},
+  { id: 1, nombre: "Pan", precio: 6000, stock: 15 },
+  { id: 2, nombre: "Queso", precio: 9600, stock: 10 },
+  { id: 3, nombre: "Jamón", precio: 11000, stock: 8 },
+  { id: 4, nombre: "Yerba", precio: 2500, stock: 30 },
+  { id: 5, nombre: "Azúcar", precio: 1400, stock: 40 },
 ];
 
-/**
- * exporto el array
- */
+console.log(productos);
 
 /**
- * 2. Operaciones basicas y acceso
+ * 2. Operaciones básicas y acceso
  * imprimo la longitud del array
  */
 
-let logitudArray = productos
+let logitudArray = productos;
 console.log(`Total de productos: ${logitudArray.length}`);
 
 let segundoProducto = productos[1].nombre;
 console.log(`Segundo producto: ${segundoProducto}`);
 
 let cuartoProducto = productos[3].nombre;
-console.log(`Cuarto producto: ${cuartoProducto}`)
+console.log(`Cuarto producto: ${cuartoProducto}`);
+
+/**
+ *  3. Recorrido del Array: */
+
+/* 3.1. bucle for...of */
+console.log("--- Recorrido con for...of ---");
+for (const producto of productos) {
+  console.log(producto.nombre, producto.precio);
+}
+
+/* 3.2. método forEach() */
+console.log("\n--- Recorrido con forEach() ---");
+productos.forEach((producto) => {
+  console.log(`Producto: ${producto.nombre}, Precio: ${producto.precio}`);
+});
+
+/* 4. Manipulación de Arrays: */
+
+/* 4.1. Se agregan dos elementos al final del array productos utilizando push().*/
+productos.push(
+    {id: 6, nombre: 'Galletas', precio: 3000, stock: 25},
+    {id: 7, nombre: 'Leche', precio: 2200, stock: 18}
+);
+
+console.log('--- Array de productos actualizado ---');
+console.log(productos);
