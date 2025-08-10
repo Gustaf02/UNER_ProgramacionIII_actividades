@@ -49,9 +49,23 @@ productos.forEach((producto) => {
 
 /* 4.1. Se agregan dos elementos al final del array productos utilizando push().*/
 productos.push(
-    {id: 6, nombre: 'Galletas', precio: 3000, stock: 25},
-    {id: 7, nombre: 'Leche', precio: 2200, stock: 18}
+  { id: 6, nombre: 'Galletas', precio: 3000, stock: 25 },
+  { id: 7, nombre: 'Leche', precio: 2200, stock: 18 }
 );
 
 console.log('--- Array de productos actualizado ---');
+console.log(productos);
+/* 4.2. Elimino el último elemento del array productos con pop(). */
+productos.pop();
+console.log('--- Array después de eliminar el último elemento (pop) ---');
+console.log(productos);
+
+/* 4.3. Agrego un nuevo elemento al inicio del array productos con unshift(). */
+productos.unshift({ id: 0, nombre: 'Arroz', precio: 1800, stock: 50 });
+console.log('--- Array después de agregar un elemento al inicio (unshift) ---');
+console.log(productos);
+
+/* 4.4. Elimino el primer elemento del array productos con shift(). */
+productos.shift();
+console.log('--- Array después de eliminar el primer elemento (shift) ---');
 console.log(productos);
