@@ -38,13 +38,13 @@ console.log(`Cuarto producto: ${cuartoProducto}`);
 /* 3.1. bucle for...of */
 console.log("--- Recorrido con for...of ---");
 for (const producto of productos) {
-  console.log(producto.nombre, producto.precio);
+  console.log(`${producto.nombre}, Precio: $${producto.precio}`);
 }
 
 /* 3.2. método forEach() */
 console.log("\n--- Recorrido con forEach() ---");
 productos.forEach((producto) => {
-  console.log(`Producto: ${producto.nombre}, Precio: ${producto.precio}`);
+  console.log(`Producto: ${producto.nombre}, Precio: $${producto.precio}`);
 });
 
 /* 4. Manipulación de Arrays: */
