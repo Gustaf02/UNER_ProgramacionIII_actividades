@@ -14,20 +14,44 @@ let productos = [
     {id: 5, nombre: 'Azucar', precio: 1400, stock:40},
 ];
 
-/**
- * exporto el array
- */
+/* 4. Manipulación de Arrays:
+5. Crear un nuevo array llamado productosConStock que contenga solo los elementos del array productos
+donde el stock sea mayor que 0 utilizando filter().*/ 
 
-/**
- * 2. Operaciones basicas y acceso
- * imprimo la longitud del array
- */
+let productosConStock = productos.filter(producto => producto.stock > 0);
+console.log("\n--- Productos en stock ---");
+console.log(productosConStock);
 
-let logitudArray = productos
-console.log(`Total de productos: ${logitudArray.length}`);
+/* 6. Crear un nuevo array llamado nombresProductos que contenga solo los nombres de todos los
+productos en el inventario utilizando map().*/
 
-let segundoProducto = productos[1].nombre;
-console.log(`Segundo producto: ${segundoProducto}`);
+let nombresProductos = productos.map(producto => producto.nombre);
 
-let cuartoProducto = productos[3].nombre;
-console.log(`Cuarto producto: ${cuartoProducto}`)
+console.log("\n--- Nombres de los productos ---");
+console.log(nombresProductos); 
+
+/* 7. Encontrar y guardar en una variable el primer producto en productos que tenga un id específico (ej. id:3)
+utilizando find(). Si no lo encuentra, indicar que no existe. */
+
+let idBuscado = 3; 
+let primerProd = productos.find(producto => producto.id === idBuscado);
+
+console.log("\n--- Primer producto encontrado con ID Nro 3 ---");
+if (primerProd) {
+  console.log(`Producto encontrado:`, primerProd);
+} else {
+  console.log(`No se encontró ningún producto con el ID ${idBuscado}.`);
+}
+
+/* 8. Crear un nuevo array llamado productosOrdenados que contenga los productos ordenados por precio
+en orden decreciente. (investigar método sort()).
+Imprimir en consola el array original o creado para verificar las operaciones realizadas. 
+*/
+
+const productosOrdenados = [...productos].sort((a, b) => a.precio - b.precio);
+
+console.log("\n--- Productos ordenados por precio de mayor a menor ---");
+console.log(productosOrdenados);
+
+console.log("\n--- Lista original de productos (sin modificar) ---");
+console.log(productos);
