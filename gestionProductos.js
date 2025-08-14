@@ -16,13 +16,15 @@ let productos = [
 
 console.log(productos);
 
+const productosOriginal = [...productos]; 
+
 /**
  * 2. Operaciones básicas y acceso
  * imprimo la longitud del array
  */
 
-let logitudArray = productos;
-console.log(`Total de productos: ${logitudArray.length}`);
+let longitudArray = productos.length;
+console.log(`Total de productos: ${longitudArray}`);
 
 let segundoProducto = productos[1].nombre;
 console.log(`Segundo producto: ${segundoProducto}`);
@@ -49,23 +51,64 @@ productos.forEach((producto) => {
 
 /* 4.1. Se agregan dos elementos al final del array productos utilizando push().*/
 productos.push(
-  { id: 6, nombre: 'Galletas', precio: 3000, stock: 25 },
-  { id: 7, nombre: 'Leche', precio: 2200, stock: 18 }
+  { id: 6, nombre: "Galletas", precio: 3000, stock: 25 },
+  { id: 7, nombre: "Leche", precio: 2200, stock: 18 }
 );
 
-console.log('--- Array de productos actualizado ---');
+console.log("--- Array de productos actualizado ---");
 console.log(productos);
 /* 4.2. Elimino el último elemento del array productos con pop(). */
 productos.pop();
-console.log('--- Array después de eliminar el último elemento (pop) ---');
+console.log("--- Array después de eliminar el último elemento (pop) ---");
 console.log(productos);
 
 /* 4.3. Agrego un nuevo elemento al inicio del array productos con unshift(). */
-productos.unshift({ id: 0, nombre: 'Arroz', precio: 1800, stock: 50 });
-console.log('--- Array después de agregar un elemento al inicio (unshift) ---');
+productos.unshift({ id: 0, nombre: "Arroz", precio: 1800, stock: 50 });
+console.log("--- Array después de agregar un elemento al inicio (unshift) ---");
 console.log(productos);
 
 /* 4.4. Elimino el primer elemento del array productos con shift(). */
 productos.shift();
-console.log('--- Array después de eliminar el primer elemento (shift) ---');
+console.log("--- Array después de eliminar el primer elemento (shift) ---");
 console.log(productos);
+
+/* 4.5. Crear un nuevo array llamado productosConStock que contenga solo los elementos del array productos
+donde el stock sea mayor que 0 utilizando filter().*/
+
+let productosConStock = productos.filter((producto) => producto.stock > 0);
+console.log("\n--- Productos en stock ---");
+console.log(productosConStock);
+
+/* 4.6. Crear un nuevo array llamado nombresProductos que contenga solo los nombres de todos los
+productos en el inventario utilizando map().*/
+
+let nombresProductos = productos.map((producto) => producto.nombre);
+
+console.log("\n--- Nombres de los productos ---");
+console.log(nombresProductos);
+
+/* 4.7. Encontrar y guardar en una variable el primer producto en productos que tenga un id específico (ej. id:3)
+utilizando find(). Si no lo encuentra, indicar que no existe. */
+
+let idBuscado = 3;
+let primerProd = productos.find((producto) => producto.id === idBuscado);
+
+console.log("\n--- Primer producto encontrado con ID Nro 3 ---");
+if (primerProd) {
+  console.log(`Producto encontrado:`, primerProd);
+} else {
+  console.log(`No se encontró ningún producto con el ID ${idBuscado}.`);
+}
+
+/* 4.8. Crear un nuevo array llamado productosOrdenados que contenga los productos ordenados por precio
+en orden decreciente. (investigar método sort()).
+Imprimir en consola el array original o creado para verificar las operaciones realizadas. 
+*/
+
+const productosOrdenados = [...productos].sort((a, b) => b.precio - a.precio);
+
+console.log("\n--- Productos ordenados por precio de mayor a menor ---");
+console.log(productosOrdenados);
+
+console.log("\n--- Lista original de productos (sin modificar) ---");
+console.log(productosOriginal);
