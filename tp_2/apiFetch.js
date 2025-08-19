@@ -55,7 +55,22 @@ async function agregarProducto() {
     console.error('Error al agregar el producto:', error.message);
   }
 }
+
+/**
+ * 5-Buscar la información de un determinado producto, utilizando un "id" como parámetro (GET).
+ */
+async function buscarProductoPorId(id) {
+  try {
+    const response = await axios.get(`${API_URL}/${id}`);
+    console.log(`Se buca la información de este producto de acuerdo al ID ${id}:`, response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`Error al buscar el producto con ID ${id}:`, error.message);
+  }
+}
+
 // llamo a las funciones
 productos();
 productosLimitados(5, 'productosJSON.json');
 agregarProducto();
+buscarProductoPorId(2);
