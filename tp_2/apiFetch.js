@@ -5,17 +5,15 @@ const API_URL = 'https://fakestoreapi.com/products';
 /**
  * 1-Recuperar la información de todos los productos (GET).
  */
-// async function productos() {
-//   try {
-//     const response = await axios.get(API_URL);
-//     console.log('Todos los productos:', response.data);pro
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error al obtener productos:', error.message);
-//   }
-// }
-
-// productos();
+async function productos() {
+  try {
+    const response = await axios.get(API_URL);
+    console.log('Todos los productos:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener productos:', error.message);
+  }
+}
 
 /**
  * 2-Recuperar la información de un número limitado de productos (GET).
@@ -37,5 +35,7 @@ async function productosLimitados(limite, productosJSON) {
   }
 }
 
-// Ejemplo: Obtenemos 5 productos
+// llamo a las funciones
+productos();
 productosLimitados(5, 'productosJSON.json');
+
