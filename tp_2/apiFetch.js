@@ -35,7 +35,27 @@ async function productosLimitados(limite, productosJSON) {
   }
 }
 
+/**
+ * 4-Agrego un nuevo producto (POST).
+ */
+async function agregarProducto() {
+  const nuevoProducto = {
+    title: 'Producto nuevo',
+    price: 18.5,
+    description: 'Este es un producto nuevo diseñado para fines de desarrollo y corroboración de funcionamiento',
+    image: 'https://i.pravatar.cc',
+    category: 'electronic'
+  };
+
+  try {
+    const response = await axios.post(`${API_URL}`, nuevoProducto);
+    console.log('Producto agregado con éxito:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error al agregar el producto:', error.message);
+  }
+}
 // llamo a las funciones
 productos();
 productosLimitados(5, 'productosJSON.json');
-
+agregarProducto();
