@@ -62,15 +62,71 @@ async function agregarProducto() {
 async function buscarProductoPorId(id) {
   try {
     const response = await axios.get(`${API_URL}/${id}`);
-    console.log(`Se buca la información de este producto de acuerdo al ID ${id}:`, response.data);
+    console.log(`Se busca la información de este producto de acuerdo al ID ${id}:`, response.data);
     return response.data;
   } catch (error) {
     console.error(`Error al buscar el producto con ID ${id}:`, error.message);
   }
 }
 
+//6------------------Eliminar un producto (DELETE).
+
+async function eliminarProducto(id) {
+
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'DELETE',
+        });
+        if (!response.ok){
+            throw new Error(`Codigo de error: ${response.status}`);
+        }
+        const productoEliminado = await response.json();
+        console.log(`Producto con id = ${id} eliminado:`,productoEliminado);
+    }catch(error){
+        console.error(`Error: ${error.message}`);
+    }
+}
+
+
+//7------------------Modificar los datos de un producto (UPDATE).
+
+async function modificarProducto(id, datosActualizados) {
+
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datosActualizados)
+    });
+    if (!response.ok) {
+      throw new Error(`Codigo de error: ${response.status}`);
+    }
+    const productoActualizado = await response.json();
+    console.log(`Producto con id = ${id} actualizado:`, productoActualizado);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+  }
+}
+
+
 // llamo a las funciones
 productos();
 productosLimitados(5, 'productosJSON.json');
 agregarProducto();
 buscarProductoPorId(2);
+eliminarProducto(1);
+
+const nuevosDatos = {
+  "id": 500,
+  "title": "Producto actualizado",
+  "price": 10000,
+  "description": "Soy un producto actualizado",
+  "category": "",
+  "image": "",
+  "rating": {
+    "rate": 5,
+    "count": 10
+  }
+}
+
+modificarProducto(3, nuevosDatos);
