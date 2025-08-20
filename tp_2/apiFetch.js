@@ -36,12 +36,27 @@ async function productosLimitados(limite, productosJSON) {
 }
 
 /**
- * 4-Agrego un nuevo producto (POST).
+ * 4-A continuación, agrego un nuevo producto (POST) y lo persisto en el archivo local.
  */
 async function agregarProducto(nuevoProducto) {
   try {
     const response = await axios.post(`${API_URL}`, nuevoProducto);
     console.log('Producto agregado con éxito:', response.data);
+
+    // Agrego el nuevo producto al archivo local
+    let productosExistentes = [];
+    if (fs.existsSync('productosJSON.json')) {
+      const data = fs.readFileSync('productosJSON.json');
+      productosExistentes = JSON.parse(data);
+    } 
+
+    // Agregando luego, el producto recién creado
+    productosExistentes.push(response.data);
+
+    // Se escribe el array actualizado de vuelta al archivo
+    fs.writeFileSync('productosJSON.json', JSON.stringify(productosExistentes, null, 2));
+    console.log('Nuevo producto agregado a productosJSON.json');
+
     return response.data;
   } catch (error) {
     console.error('Error al agregar el producto:', error.message);
