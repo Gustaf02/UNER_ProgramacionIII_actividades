@@ -1,43 +1,79 @@
 const axios = require('axios');
-const fs = require('fs');
+const fs = require('fs').promises;
 const API_URL = 'https://fakestoreapi.com/products';
 
 /**
  * 1-Recuperar la información de todos los productos (GET).
  */
-async function productos() {
-  try {
-    const response = await axios.get(API_URL);
-    console.log('Todos los productos:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener productos:', error.message);
-  }
+async function todosProductos() {
+
+    try {
+        const response = await fetch(API_URL);
+        if (!response.ok){
+            throw new Error(`Codigo de error: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Todos los productos: ',data);
+        return data;
+
+    }catch(error){
+        console.error(`Error: ${error}`);
+    }
 }
 
 /**
  * 2-Recuperar la información de un número limitado de productos (GET).
  */
-console.log("=====Recuperar la información de un número limitado de productos (GET)======")
-async function productosLimitados(limite, productosJSON) {
-  try {
-    const response = await axios.get(`${API_URL}?limit=${limite}`);
-    console.log(`Primeros ${limite} productos:`, response.data);
-    /**
-     * 3-Persistir los datos de la consulta anterior en un archivo local JSON.
-     */
-    const productosJason = response.data;
-    fs.writeFileSync(productosJSON, JSON.stringify(productosJason, null, 2));
-    console.log(`Productos guardados en ${productosJSON}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener productos limitados:', error.message);
-  }
+async function productosLimitados(cantidad) {
+
+    try {
+        const response = await fetch(`${API_URL}?limit=${cantidad}`);
+        if (!response.ok){
+            throw new Error(`Codigo de error: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(`Productos limitados (${cantidad}): `, data);
+        return data;
+
+    }catch(error){
+        console.error(`Error: ${error}`);
+    }
 }
 
 /**
- * 4-A continuación, agrego un nuevo producto (POST) y lo persisto en el archivo local.
+   * 3-Persistir los datos de la consulta anterior en un archivo local JSON.
+   */
+async function persistirProductosLimitados(cantidad, nombreArchivo) {
+
+    try {
+        const response = await fetch(`${API_URL}?limit=${cantidad}`);
+        if (!response.ok){
+            throw new Error(`Codigo de error: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(`Productos limitados (${cantidad}) grabados en ${nombreArchivo}: `, data);
+
+        await fs.writeFile(nombreArchivo, JSON.stringify(data, null, 2), 'utf-8');
+        return data;
+
+    }catch(error){
+        console.error(`Error: ${error}`);
+    }
+}
+
+/**
+ * 4- A continuación, agrego un nuevo producto (POST) y lo persisto en el archivo local.
  */
+
+// DECLARACIÓN DEL OBJETO
+const nuevoProducto = {
+  title: 'Producto nuevo',
+  price: 18.5,
+  description: 'Este es un producto nuevo diseñado para fines de desarrollo y corroboración de funcionamiento',
+  image: 'https://i.pravatar.cc',
+  category: 'electronic'
+};
+
 async function agregarProducto(nuevoProducto) {
   try {
     const response = await axios.post(`${API_URL}`, nuevoProducto);
@@ -76,15 +112,6 @@ async function buscarProductoPorId(id) {
   }
 }
 
-// DECLARACIÓN DEL OBJETO
-const nuevoProducto = {
-  title: 'Producto nuevo',
-  price: 18.5,
-  description: 'Este es un producto nuevo diseñado para fines de desarrollo y corroboración de funcionamiento',
-  image: 'https://i.pravatar.cc',
-  category: 'electronic'
-};
-
 //6------------------Eliminar un producto (DELETE).
 
 async function eliminarProducto(id) {
@@ -106,6 +133,19 @@ async function eliminarProducto(id) {
 
 //7------------------Modificar los datos de un producto (UPDATE).
 
+const nuevosDatos = {
+  "id": 500,
+  "title": "Producto actualizado",
+  "price": 10000,
+  "description": "Soy un producto actualizado",
+  "category": "",
+  "image": "",
+  "rating": {
+    "rate": 5,
+    "count": 10
+  }
+}
+
 async function modificarProducto(id, datosActualizados) {
 
   try {
@@ -126,23 +166,17 @@ async function modificarProducto(id, datosActualizados) {
 
 
 // llamo a las funciones
-productos();
-productosLimitados(5, 'productosJSON.json');
-agregarProducto(nuevoProducto);
-buscarProductoPorId(2);
-eliminarProducto(1);
 
-const nuevosDatos = {
-  "id": 500,
-  "title": "Producto actualizado",
-  "price": 10000,
-  "description": "Soy un producto actualizado",
-  "category": "",
-  "image": "",
-  "rating": {
-    "rate": 5,
-    "count": 10
-  }
-}
+todosProductos();
+
+productosLimitados(5);
+
+persistirProductosLimitados(5, 'productosJSON.json');
+
+agregarProducto(nuevoProducto);
+
+buscarProductoPorId(2);
+
+eliminarProducto(1);
 
 modificarProducto(3, nuevosDatos);
