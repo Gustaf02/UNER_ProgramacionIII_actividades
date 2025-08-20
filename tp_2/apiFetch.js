@@ -38,15 +38,7 @@ async function productosLimitados(limite, productosJSON) {
 /**
  * 4-Agrego un nuevo producto (POST).
  */
-async function agregarProducto() {
-  const nuevoProducto = {
-    title: 'Producto nuevo',
-    price: 18.5,
-    description: 'Este es un producto nuevo diseñado para fines de desarrollo y corroboración de funcionamiento',
-    image: 'https://i.pravatar.cc',
-    category: 'electronic'
-  };
-
+async function agregarProducto(nuevoProducto) {
   try {
     const response = await axios.post(`${API_URL}`, nuevoProducto);
     console.log('Producto agregado con éxito:', response.data);
@@ -68,6 +60,15 @@ async function buscarProductoPorId(id) {
     console.error(`Error al buscar el producto con ID ${id}:`, error.message);
   }
 }
+
+// DECLARACIÓN DEL OBJETO
+const nuevoProducto = {
+  title: 'Producto nuevo',
+  price: 18.5,
+  description: 'Este es un producto nuevo diseñado para fines de desarrollo y corroboración de funcionamiento',
+  image: 'https://i.pravatar.cc',
+  category: 'electronic'
+};
 
 //6------------------Eliminar un producto (DELETE).
 
@@ -112,7 +113,7 @@ async function modificarProducto(id, datosActualizados) {
 // llamo a las funciones
 productos();
 productosLimitados(5, 'productosJSON.json');
-agregarProducto();
+agregarProducto(nuevoProducto);
 buscarProductoPorId(2);
 eliminarProducto(1);
 
