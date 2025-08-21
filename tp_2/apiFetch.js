@@ -1,4 +1,3 @@
-const axios = require('axios');
 const fs = require('fs').promises;
 const API_URL = 'https://fakestoreapi.com/products';
 
@@ -183,19 +182,105 @@ async function modificarProducto(id, datosActualizados) {
   }
 }
 
+/**
+FileSystem
+Utilizando el archivo creado en el punto anterior:
+1- Agregar producto al archivo local
+ */
+async function agregarProductoLocal() {
+    try {
+        const nombreArchivo = 'productosJSON.json';
+        
+        const data = await fs.readFile(nombreArchivo, 'utf-8');
+        const productos = JSON.parse(data);
 
-// llamo a las funciones
+        //Compara el ID más alto en el JSON para agregarle el ID al producto
+        const maxId = productos.length > 0
+            ? Math.max(...productos.map(p => p.id || 0))
+            : 0;
+        const productoParaAgregar = {
 
-todosProductos();
+            id: maxId + 1,
+            title: 'Monitor 4K',
+            price: 350,
+            description: 'Monitor de alta resolución ideal para desarrollo web.',
+            image: 'https://i.pravatar.cc',
+            category: 'electronic'
+        };
+        
+        productos.push(productoParaAgregar);
+        
+        const productosActualizados = JSON.stringify(productos, null, 2);
+        
+        await fs.writeFile(nombreArchivo, productosActualizados);
+        
+        console.log(`Se agregó "Monitor 4K" a '${nombreArchivo}' con éxito.`);
+        console.log('Te muestro el archivo actualizado:', productos);
+    } catch (error) {
+        console.error(`Hubo un error al agregar el producto al archivo: ${error.message}`);
+    }
+}
 
-productosLimitados(5);
+/**
+2- Eliminar los productos superiores a un determinado valor.
+ */
+async function eliminarProductosPorValor() {
+    try {
+        const nombreArchivo = 'productosJSON.json';
+        const valorLimite = 100;
 
-persistirProductosLimitados(5, 'productosJSON.json');
+        const data = await fs.readFile(nombreArchivo, 'utf-8');
+        let productos = JSON.parse(data);
+        
+        const productosFiltrados = productos.filter(producto => producto.price <= valorLimite);
+        
+        if (productos.length === productosFiltrados.length) {
+            console.log('No se encontraron productos con precio superior al valor límite.');
+            return;
+        }
 
-agregarProducto(nuevoProducto);
+        const productosActualizados = JSON.stringify(productosFiltrados, null, 2);
+        
+        await fs.writeFile(nombreArchivo, productosActualizados);
+        
+        console.log(`Productos con precio superior a ${valorLimite} eliminados de '${nombreArchivo}'.`);
+        console.log('Te muestro el archivo actualizado:', productosFiltrados);
+    } catch (error) {
+        console.error(`Hubo un error al eliminar productos por valor: ${error.message}`);
+    }
+}
 
-buscarProductoPorId(2);
+// ---Función para llamar a las funciones de manera secuencial ---
 
-eliminarProducto(1);
+async function ejecutarProcesos() {
+    try {
+        console.log('Iniciando procesos... \n');
+        
+        await todosProductos();
+        
+        await productosLimitados(5); 
 
-modificarProducto(3, nuevosDatos);
+        await persistirProductosLimitados(5, 'productosJSON.json');
+        
+        await agregarProducto(nuevoProducto);
+        
+        await buscarProductoPorId(2);
+        
+        await eliminarProducto(1);
+        
+        await modificarProducto(3, nuevosDatos);
+
+        await agregarProductoLocal();
+
+        await eliminarProductosPorValor();
+
+        console.log('\nTodos los procesos se ejecutaron correctamente.');
+
+    } catch (error) {
+        console.error('Hubo un error en la secuencia de procesos:', error);
+    }
+}
+
+// Llama a la función principal para iniciar la secuencia
+ejecutarProcesos();
+
