@@ -67,49 +67,68 @@ async function persistirProductosLimitados(cantidad, nombreArchivo) {
 
 // DECLARACIÓN DEL OBJETO
 const nuevoProducto = {
-  title: 'Producto nuevo',
-  price: 18.5,
-  description: 'Este es un producto nuevo diseñado para fines de desarrollo y corroboración de funcionamiento',
-  image: 'https://i.pravatar.cc',
-  category: 'electronic'
+    title: 'Producto nuevo',
+    price: 18.5,
+    description: 'Este es un producto nuevo diseñado para fines de desarrollo y corroboración de funcionamiento',
+    image: 'https://i.pravatar.cc',
+    category: 'electronic'
 };
 
 async function agregarProducto(nuevoProducto) {
-  try {
-    const response = await axios.post(`${API_URL}`, nuevoProducto);
-    console.log('Producto agregado con éxito:', response.data);
+    try {
+        const response = await fetch(`${API_URL}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(nuevoProducto)
+        });
+        if (!response.ok) {
+            throw new Error(`Código de error: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Producto agregado con éxito:', data);
 
-    // Agrego el nuevo producto al archivo local
-    let productosExistentes = [];
-    if (fs.existsSync('productosJSON.json')) {
-      const data = fs.readFileSync('productosJSON.json');
-      productosExistentes = JSON.parse(data);
-    } 
+        // Agrego el nuevo producto al archivo local
+        let productosExistentes = [];
+        try {
+            const fileData = await fs.readFile('productosJSON.json', 'utf-8');
+            productosExistentes = JSON.parse(fileData);
+        } catch (readError) {
+            // Si el archivo no existe o hay un error de lectura, se crea un array vacío
+            if (readError.code !== 'ENOENT') {
+                console.error('Error al leer el archivo:', readError);
+            }
+        }
 
-    // Agregando luego, el producto recién creado
-    productosExistentes.push(response.data);
+        // Agregando luego, el producto recién creado
+        productosExistentes.push(data);
 
-    // Se escribe el array actualizado de vuelta al archivo
-    fs.writeFileSync('productosJSON.json', JSON.stringify(productosExistentes, null, 2));
-    console.log('Nuevo producto agregado a productosJSON.json');
+        // Se escribe el array actualizado de vuelta al archivo
+        await fs.writeFile('productosJSON.json', JSON.stringify(productosExistentes, null, 2));
+        console.log('Nuevo producto agregado a productosJSON.json');
 
-    return response.data;
-  } catch (error) {
-    console.error('Error al agregar el producto:', error.message);
-  }
+        return data;
+    } catch (error) {
+        console.error('Error al agregar el producto:', error.message);
+    }
 }
 
 /**
  * 5-Buscar la información de un determinado producto, utilizando un "id" como parámetro (GET).
  */
 async function buscarProductoPorId(id) {
-  try {
-    const response = await axios.get(`${API_URL}/${id}`);
-    console.log(`Se busca la información de este producto de acuerdo al ID ${id}:`, response.data);
-    return response.data;
-  } catch (error) {
-    console.error(`Error al buscar el producto con ID ${id}:`, error.message);
-  }
+    try {
+        const response = await fetch(`${API_URL}/${id}`);
+        if (!response.ok) {
+            throw new Error(`Código de error: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(`Se busca la información de este producto de acuerdo al ID ${id}:`, data);
+        return data;
+    } catch (error) {
+        console.error(`Error al buscar el producto con ID ${id}:`, error.message);
+    }
 }
 
 //6------------------Eliminar un producto (DELETE).
