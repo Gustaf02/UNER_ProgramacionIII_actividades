@@ -12,7 +12,7 @@ async function todosProductos() {
             throw new Error(`Codigo de error: ${response.status}`);
         }
         const data = await response.json();
-        console.log('Todos los productos: ',data);
+        console.log('\nTODOS LOS PRODUCTOS:',data);
         return data;
 
     }catch(error){
@@ -31,7 +31,7 @@ async function productosLimitados(cantidad) {
             throw new Error(`Codigo de error: ${response.status}`);
         }
         const data = await response.json();
-        console.log(`Productos limitados (${cantidad}): `, data);
+        console.log(`\nPRODUCTOS LIMITADOS (${cantidad}): `, data);
         return data;
 
     }catch(error){
@@ -50,7 +50,7 @@ async function persistirProductosLimitados(cantidad, nombreArchivo) {
             throw new Error(`Codigo de error: ${response.status}`);
         }
         const data = await response.json();
-        console.log(`Productos limitados (${cantidad}) grabados en ${nombreArchivo}: `, data);
+        console.log(`\nPRODUCTOS LIMITADOS (${cantidad}) GRABADOS EN ${nombreArchivo}: `, data);
 
         await fs.writeFile(nombreArchivo, JSON.stringify(data, null, 2), 'utf-8');
         return data;
@@ -61,7 +61,7 @@ async function persistirProductosLimitados(cantidad, nombreArchivo) {
 }
 
 /**
- * 4- A continuación, agrego un nuevo producto (POST) y lo persisto en el archivo local.
+ * 4- A continuación, agrego un nuevo producto (POST)
  */
 
 // DECLARACIÓN DEL OBJETO
@@ -86,27 +86,7 @@ async function agregarProducto(nuevoProducto) {
             throw new Error(`Código de error: ${response.status}`);
         }
         const data = await response.json();
-        console.log('Producto agregado con éxito:', data);
-
-        // Agrego el nuevo producto al archivo local
-        let productosExistentes = [];
-        try {
-            const fileData = await fs.readFile('productosJSON.json', 'utf-8');
-            productosExistentes = JSON.parse(fileData);
-        } catch (readError) {
-            // Si el archivo no existe o hay un error de lectura, se crea un array vacío
-            if (readError.code !== 'ENOENT') {
-                console.error('Error al leer el archivo:', readError);
-            }
-        }
-
-        // Agregando luego, el producto recién creado
-        productosExistentes.push(data);
-
-        // Se escribe el array actualizado de vuelta al archivo
-        await fs.writeFile('productosJSON.json', JSON.stringify(productosExistentes, null, 2));
-        console.log('Nuevo producto agregado a productosJSON.json');
-
+        console.log('\nPRODUCTO AGREGADO CON EXITO: ', data);
         return data;
     } catch (error) {
         console.error('Error al agregar el producto:', error.message);
@@ -123,10 +103,10 @@ async function buscarProductoPorId(id) {
             throw new Error(`Código de error: ${response.status}`);
         }
         const data = await response.json();
-        console.log(`Se busca la información de este producto de acuerdo al ID ${id}:`, data);
+        console.log(`\nINFORMACION DEL PRODUCTO CON ID = ${id}:`, data);
         return data;
     } catch (error) {
-        console.error(`Error al buscar el producto con ID ${id}:`, error.message);
+        console.error(`Error al buscar el producto con ID = ${id}:`, error.message);
     }
 }
 
@@ -142,7 +122,7 @@ async function eliminarProducto(id) {
             throw new Error(`Codigo de error: ${response.status}`);
         }
         const productoEliminado = await response.json();
-        console.log(`Producto con id = ${id} eliminado:`,productoEliminado);
+        console.log(`\nPRODUCTO CON ID = ${id} ELIMINADO: `,productoEliminado);
     }catch(error){
         console.error(`Error: ${error.message}`);
     }
@@ -151,8 +131,8 @@ async function eliminarProducto(id) {
 
 //7------------------Modificar los datos de un producto (UPDATE).
 
-const nuevosDatos = {
-  "id": 500,
+let nuevosDatos = {
+  "id": "",
   "title": "Producto actualizado",
   "price": 10000,
   "description": "Soy un producto actualizado",
@@ -167,6 +147,7 @@ const nuevosDatos = {
 async function modificarProducto(id, datosActualizados) {
 
   try {
+    datosActualizados['id'] = id;       //Mantengo id original (ese campo no se actualiza)
     const response = await fetch(`${API_URL}/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -176,7 +157,7 @@ async function modificarProducto(id, datosActualizados) {
       throw new Error(`Codigo de error: ${response.status}`);
     }
     const productoActualizado = await response.json();
-    console.log(`Producto con id = ${id} actualizado:`, productoActualizado);
+    console.log(`\nPRODUCTO CON ID: ${id} ACTUALIZADO:`, productoActualizado);
   } catch (error) {
     console.error(`Error: ${error.message}`);
   }
@@ -187,10 +168,8 @@ FileSystem
 Utilizando el archivo creado en el punto anterior:
 1- Agregar producto al archivo local
  */
-async function agregarProductoLocal() {
-    try {
-        const nombreArchivo = 'productosJSON.json';
-        
+async function agregarProductoLocal(nombreArchivo) {
+    try { 
         const data = await fs.readFile(nombreArchivo, 'utf-8');
         const productos = JSON.parse(data);
 
@@ -214,8 +193,8 @@ async function agregarProductoLocal() {
         
         await fs.writeFile(nombreArchivo, productosActualizados);
         
-        console.log(`Se agregó "Monitor 4K" a '${nombreArchivo}' con éxito.`);
-        console.log('Te muestro el archivo actualizado:', productos);
+        console.log(`\nSE AGREGO "MONITOR 4K" A '${nombreArchivo}' CON EXITO`);
+        console.log('ARCHIVO ACTUALIZADO:', productos);
     } catch (error) {
         console.error(`Hubo un error al agregar el producto al archivo: ${error.message}`);
     }
@@ -224,18 +203,17 @@ async function agregarProductoLocal() {
 /**
 2- Eliminar los productos superiores a un determinado valor.
  */
-async function eliminarProductosPorValor() {
+async function eliminarProductosSuperiores(valor) {
     try {
         const nombreArchivo = 'productosJSON.json';
-        const valorLimite = 100;
 
         const data = await fs.readFile(nombreArchivo, 'utf-8');
         let productos = JSON.parse(data);
         
-        const productosFiltrados = productos.filter(producto => producto.price <= valorLimite);
+        const productosFiltrados = productos.filter(producto => producto.price <= valor);
         
         if (productos.length === productosFiltrados.length) {
-            console.log('No se encontraron productos con precio superior al valor límite.');
+            console.log('\nNO SE ENCONTRARON PRODUCTOS CON VALOR SUPERIOR AL LIMITE');
             return;
         }
 
@@ -243,8 +221,8 @@ async function eliminarProductosPorValor() {
         
         await fs.writeFile(nombreArchivo, productosActualizados);
         
-        console.log(`Productos con precio superior a ${valorLimite} eliminados de '${nombreArchivo}'.`);
-        console.log('Te muestro el archivo actualizado:', productosFiltrados);
+        console.log(`\nPRODUCTOS CON VALOR SUPERIOR A ${valor} ELIMINADOS DE '${nombreArchivo}'.`);
+        console.log('ARCHIVO ACTUALIZADO:', productosFiltrados);
     } catch (error) {
         console.error(`Hubo un error al eliminar productos por valor: ${error.message}`);
     }
@@ -270,9 +248,9 @@ async function ejecutarProcesos() {
         
         await modificarProducto(3, nuevosDatos);
 
-        await agregarProductoLocal();
+        await agregarProductoLocal('productosJSON.json');
 
-        await eliminarProductosPorValor();
+        await eliminarProductosSuperiores(100);
 
         console.log('\nTodos los procesos se ejecutaron correctamente.');
 
